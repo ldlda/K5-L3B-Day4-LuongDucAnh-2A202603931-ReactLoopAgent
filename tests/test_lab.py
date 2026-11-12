@@ -80,6 +80,13 @@ class LoopTests(unittest.TestCase):
 
 
 class ProviderTests(unittest.TestCase):
+    @patch.dict('os.environ', {'OPENAI_API_KEY': 'test'})
+    @patch('providers.post_json')
+    def test_openai_null_tool_calls_are_empty(self, post):
+        post.return_value = {'choices': [{'message': {'role': 'assistant', 'content': 'ok', 'tool_calls': None}, 'finish_reason': 'stop'}], 'usage': {}}
+        client = Provider('openai', 'test-model')
+        self.assertEqual(client.complete([{'role': 'user', 'content': 'hello'}], [])['calls'], [])
+
     @patch.dict('os.environ', {'ANTHROPIC_API_KEY': 'test'})
     @patch('providers.post_json')
     def test_anthropic_groups_results(self, post):
