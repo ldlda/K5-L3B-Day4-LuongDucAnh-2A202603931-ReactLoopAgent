@@ -32,7 +32,8 @@ def run_agent(question: str, provider: Provider, tools: Union[StatusTools, Bonus
         return result
 
     schemas = getattr(tools, "schemas", BONUS_SCHEMAS if isinstance(tools, BonusTools) else SCHEMAS)
-    system_prompt = getattr(tools, "system_prompt", SYSTEM_PROMPT + MY_SYSTEM_PROMPT)
+    system_prompt = getattr(tools, "system_prompt", SYSTEM_PROMPT)
+    system_prompt = f"{system_prompt}\n{MY_SYSTEM_PROMPT}"
     messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": question}]
     observed_incident_urls = set()
 
